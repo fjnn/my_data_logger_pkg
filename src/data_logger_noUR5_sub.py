@@ -80,14 +80,14 @@ def callback_imu_wrist(msg):
 if __name__ == '__main__':
     global joint_info
     pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-    sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, callback_imu_elbow)
-    sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, callback_imu_wrist)
+    sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, callback_imu_elbow)
+    sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, callback_imu_wrist)
     data_logger_module.enable_logging()
     print "logging end"
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         human_joint_info.header.stamp = rospy.Time.now()
-        data_logger_module.log_metrics(aiding="not-aided", pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], t=rospy.get_time())
+        data_logger_module.log_metrics(mark="not-aided", pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], t=rospy.get_time())
         # print('%5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f' % (r2d(joint_info.position[0]), r2d(joint_info.position[1]), r2d(joint_info.position[2]),
         #                                                                              r2d(joint_info.position[3]),
         #                                                                              r2d(joint_info.position[6]), r2d(joint_info.position[7]), r2d(joint_info.position[8])))

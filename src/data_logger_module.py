@@ -20,9 +20,9 @@ _logging_enabled = False
 
 
 # Functions
-def log_metrics(aiding, pitch, roll, yaw, t):
+def log_metrics(mark, pitch, roll, yaw, t):
     if _DATA_LOGGER.running:
-        new_data = [pitch, roll, yaw, t]
+        new_data = [mark, pitch, roll, yaw, t]
         _DATA.put(new_data)
         print new_data
     else:

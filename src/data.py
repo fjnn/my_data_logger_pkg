@@ -16,10 +16,10 @@ import os
 from datetime import datetime
 
 
-OUTPUT_FOLDER = "../Output"
+OUTPUT_FOLDER = "../Output"  # take it as a rosparam
 OUTPUT_FILENAME_PREFIX = "data"
 
-ID_MARK = 'aiding'
+ID_MARK = 'mark'
 ID_PITCH = 'human_pitch'
 ID_ROLL = 'human_roll'
 ID_YAW = 'human_yaw'

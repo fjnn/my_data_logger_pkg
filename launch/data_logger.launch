@@ -6,6 +6,6 @@
 				user_name-->
   <!-- if aiding = true call this node, else call another ADD HERE-->
 	<!-- start data_logger subscriber node -->
-	<node name="data_logger" pkg="my_data_logger_pkg" type="data_logger_sub"/>
+  <node name="data_logger" pkg="my_data_logger_pkg" type="data_logger_noUR5_sub.py" cwd="node" />
 
 </launch>
