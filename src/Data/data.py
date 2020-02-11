@@ -19,19 +19,19 @@ from datetime import datetime
 OUTPUT_FOLDER = "../Output"  # take it as a rosparam
 OUTPUT_FILENAME_PREFIX = "data"
 
-ID_MARK = 'mark'
+ID_TIME = 'elapsed_time'
 ID_PITCH = 'human_pitch'
 ID_ROLL = 'human_roll'
 ID_YAW = 'human_yaw'
-ID_TIME = 'elapsed_time'
+ID_MARK = 'mark'
 
-DATA_LABELS = (ID_MARK, ID_PITCH, ID_ROLL, ID_YAW, ID_TIME)
+DATA_LABELS = (ID_TIME, ID_PITCH, ID_ROLL, ID_YAW, ID_MARK)
 DATA_INDICES = {
-        ID_MARK: 0,  # now using for aiding but can be used as division between motions
+        ID_TIME: 0,
         ID_PITCH: 1,
         ID_ROLL: 2,
         ID_YAW: 3,
-        ID_TIME: 4
+        ID_MARK: 4  # now using for aiding but can be used as division between motions
         }
 
 
