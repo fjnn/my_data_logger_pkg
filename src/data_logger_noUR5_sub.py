@@ -2,22 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """
-This is a subscriber. Subscribes the IMU readings and save by data_logger.
+This is a subscriber. Subscribes the IMU readings and save by data_logger_module.
 
 """
 
 # imports
 import rospy
 import numpy as np
-from math import radians as d2r
-from math import degrees as r2d
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Quaternion
 from tf.transformations import quaternion_matrix as q2m
 from tf.transformations import euler_from_matrix as m2e
 
-import data_logger_module
+import Data.data_logger_module as data_logger
 
 rospy.init_node('data_logger_sub')
 
@@ -82,15 +80,13 @@ if __name__ == '__main__':
     pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
     sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, callback_imu_elbow)
     sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, callback_imu_wrist)
-    data_logger_module.enable_logging()
+    data_logger.enable_logging()
     print "logging end"
     rate = rospy.Rate(10)
+    log_start_time = rospy.get_time()
     while not rospy.is_shutdown():
         human_joint_info.header.stamp = rospy.Time.now()
-        data_logger_module.log_metrics(mark="not-aided", pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], t=rospy.get_time())
-        # print('%5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f --- %5.2f' % (r2d(joint_info.position[0]), r2d(joint_info.position[1]), r2d(joint_info.position[2]),
-        #                                                                              r2d(joint_info.position[3]),
-        #                                                                              r2d(joint_info.position[6]), r2d(joint_info.position[7]), r2d(joint_info.position[8])))
+        data_logger.log_metrics(mark="not-aided", pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], t=rospy.get_time()-log_start_time)
         calibration_flag = calibration_flag + 1
         pub.publish(human_joint_info)
         rate.sleep()
