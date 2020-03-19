@@ -20,19 +20,21 @@ from datetime import datetime
 OUTPUT_FOLDER = "/home/gizem/catkin_ws/src/my_data_logger_pkg/Output"  # take it as a rosparam
 OUTPUT_FILENAME_PREFIX = "gizem_test"
 
-ID_TIME = 'elapsed_time'
+ID_GLOBAL_TIME = 'global_time'
+ID_ELAPSED_TIME = 'elapsed_time'
 ID_PITCH = 'human_pitch'
 ID_ROLL = 'human_roll'
 ID_YAW = 'human_yaw'
 ID_MARK = 'mark'
 
-DATA_LABELS = (ID_TIME, ID_PITCH, ID_ROLL, ID_YAW, ID_MARK)
+DATA_LABELS = (ID_GLOBAL_TIME, ID_ELAPSED_TIME, ID_PITCH, ID_ROLL, ID_YAW, ID_MARK)
 DATA_INDICES = {
-        ID_TIME: 0,
-        ID_PITCH: 1,
-        ID_ROLL: 2,
-        ID_YAW: 3,
-        ID_MARK: 4  # now using for aiding but can be used as division between motions
+        ID_GLOBAL_TIME: 0,
+        ID_ELAPSED_TIME: 1,
+        ID_PITCH: 2,
+        ID_ROLL: 3,
+        ID_YAW: 4,
+        ID_MARK: 5  # now using for aiding but can be used as division between motions
         }
 
 

@@ -86,7 +86,7 @@ if __name__ == '__main__':
     log_start_time = rospy.get_time()
     while not rospy.is_shutdown():
         human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(t=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")
+        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")
         calibration_flag = calibration_flag + 1
         pub.publish(human_joint_info)
         rate.sleep()

@@ -46,7 +46,7 @@ class Ui_Form(object):
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
 
         self.retranslateUi(Form)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), Form.message)
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.message)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
         # self.start.clicked.connect // burada kaldim
@@ -61,8 +61,8 @@ class Ui_Form(object):
         print "Logging started"
         call(["rqt_plot"])  # here I will call my subscriber
 
-    def scroll_figures(self):
-        self.photo.setPixmap(QtGui.QPixmap("fig/skeleton-resizedWALK_0.png"))
+    def message(self):
+	print "Sondre <3 Gizem"
 
 
 if __name__ == "__main__":
