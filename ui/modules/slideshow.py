@@ -26,7 +26,7 @@ class Slides(QtGui.QWidget):
         self.step = 0
         self.delay = 500  # milliseconds
         self.timerEvent(parent)
-        print 'Slides are shown'  # TODO: check old code. make it fancy
+        print "Slides are shown {} seconds apart".format(self.delay/1000.0)  # TODO: check old code. make it fancy
 
     def timerEvent(self, parent=None, e=None):
         if self.step >= len(self.image_files):
