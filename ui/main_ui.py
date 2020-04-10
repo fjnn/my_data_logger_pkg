@@ -8,6 +8,7 @@
 
 from PyQt4 import QtCore, QtGui
 from subprocess import call
+from modules.slideshow import Slides
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -17,11 +18,13 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -46,10 +49,8 @@ class Ui_Form(object):
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
 
         self.retranslateUi(Form)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.message)
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.start_logging)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
-        # self.start.clicked.connect // burada kaldim
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
@@ -58,12 +59,24 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "Progress", None))
 
     def start_logging(self):
-        print "Logging started"
-        call(["rqt_plot"])  # here I will call my subscriber
+        self.pitch_slide()
+        # print "Logging started"
+        # call(["rqt_plot"])  # here I will call my subscriber
+
+    def pitch_slide(self):
+        print "pitch slide started"
 
     def message(self):
 	print "Sondre <3 Gizem"
 
+
+image_files = [
+    "fig/skeleton-resizedWALK_0",
+    "fig/skeleton-resizedWALK_1",
+    "fig/skeleton-resizedWALK_2",
+    "fig/skeleton-resizedWALK_3",
+    "fig/skeleton-resizedWALK_4"
+]
 
 if __name__ == "__main__":
     import sys
@@ -71,5 +84,6 @@ if __name__ == "__main__":
     Form = QtGui.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
+    pitchSlide = Slides(image_files=image_files)
     Form.show()
     sys.exit(app.exec_())
