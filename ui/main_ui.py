@@ -59,12 +59,52 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "Progress", None))
 
     def start_logging(self):
-        self.pitch_slide()
-        # print "Logging started"
+        # self.slide()
+        print "Logging started"
         # call(["rqt_plot"])  # here I will call my subscriber
 
-    def pitch_slide(self):
-        print "pitch slide started"
+    def slide(self, Form):
+        # print "slide started"
+        # self.image_files = image_files
+        # self.timer = QtCore.QBasicTimer()
+        # self.step = 0
+        # self.delay = 500  # milliseconds
+        # # self.timerEvent()
+        # print "Slides are shown {} seconds apart".format(self.delay/1000.0)
+        # print self.step
+        # if self.step >= len(self.image_files):
+        #     self.timer.stop()
+        #     return
+        # self.timer.start(self.delay, Form)
+        # file = self.image_files[self.step]
+        # image = QtGui.QPixmap(file)
+        # self.figure.setPixmap(image)
+        # self.step += 1
+        # print self.step
+        self.image_files = image_files
+        self.label = QtGui.QLabel(s, self)
+        self.label.setGeometry(10, 30, 640, 480)
+        self.button = QtGui.QPushButton("Start Slide Show",self)
+        self.button.setGeometry(10, 10, 140, 30)
+        self.button.clicked.connect(self.timerEvent)
+        self.timer = QtCore.QBasicTimer()
+        self.step = 0
+        self.delay = 500  # milliseconds
+        sf = "Slides are shown {} seconds apart"
+        self.setWindowTitle(sf.format(self.delay/1000.0))
+
+
+    def timerEvent(self, Form):
+        if self.step >= len(self.image_files):
+            self.timer.stop()
+            self.button.setText('Slide Show Finished')
+            return
+        self.timer.start(self.delay, self)
+        file = self.image_files[self.step]
+        image = QtGui.QPixmap(file)
+        self.label.setPixmap(image)
+        self.setWindowTitle("{} --> {}".format(str(self.step), file))
+        self.step += 1
 
     def message(self):
 	print "Sondre <3 Gizem"
@@ -84,6 +124,7 @@ if __name__ == "__main__":
     Form = QtGui.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
-    pitchSlide = Slides(image_files=image_files)
+    ui.slide(Form)
+    # pitchSlide = Slides(image_files=image_files)
     Form.show()
     sys.exit(app.exec_())
