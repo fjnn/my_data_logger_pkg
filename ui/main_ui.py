@@ -64,14 +64,23 @@ class Ui_Form(object):
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
-        global pic_index
+        global pic_index, motion_index
+        if motion_index == 0:  # pitch
+            motion = "pitch/p"
+        elif motion_index == 1:  # yaw
+            motion = "yaw/y"
+        else:
+            print "Simulation is over"
+            sys.exit(app.exec_())
+
         if pic_index <= 23:
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_list[pic_index])+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
             print "fig/ball/pitch/p"+str(pic_list[pic_index])+".png"
             pic_index += 1
         else:
             pic_index = 0
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_list[pic_index])+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+            motion_index += 1
 
     def message(self):
         print "Sondre <3 Gizem"
@@ -81,6 +90,7 @@ if __name__ == "__main__":
     import sys
     pic_list = [0,1,2,3,4,5,6,5,4,3,2,1,0,7,8,9,10,11,12,11,10,9,8,7]
     pic_index = 0
+    motion_index = 0;
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
