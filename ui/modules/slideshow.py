@@ -19,21 +19,21 @@ from PyQt4 import QtCore, QtGui
 
 
 class Slides(QtGui.QWidget):
-    def __init__(self, image_files, parent=None):
+    def __init__(self, image_files, ui, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.image_files = image_files
         self.timer = QtCore.QBasicTimer()
         self.step = 0
         self.delay = 500  # milliseconds
-        self.timerEvent(parent)
+        self.timerEvent(ui)
         print "Slides are shown {} seconds apart".format(self.delay/1000.0)  # TODO: check old code. make it fancy
 
-    def timerEvent(self, parent=None, e=None):
+    def timerEvent(self, ui, e=None):
         if self.step >= len(self.image_files):
             self.timer.stop()
             return
         self.timer.start(self.delay, self)
         file = self.image_files[self.step]
         image = QtGui.QPixmap(file)
-        # parent.label.setPixmap(image)
+        ui.label.setPixmap(image)
         self.step += 1
