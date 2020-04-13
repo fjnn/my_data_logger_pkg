@@ -64,15 +64,14 @@ class Ui_Form(object):
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
-        global pic_num
-        if pic_num <= 17:
-            # self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
-            # print"fig/ball/pitch/p"+str(pic_num)+".png"
-            pic_num += 1
+        global pic_index
+        if pic_index <= 23:
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_list[pic_index])+".png")))
+            print "fig/ball/pitch/p"+str(pic_list[pic_index])+".png"
+            pic_index += 1
         else:
-            pic_num = 0
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
+            pic_index = 0
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_list[pic_index])+".png")))
 
     def message(self):
         print "Sondre <3 Gizem"
@@ -80,7 +79,8 @@ class Ui_Form(object):
 
 if __name__ == "__main__":
     import sys
-    pic_num = 0
+    pic_list = [0,1,2,3,4,5,6,5,4,3,2,1,0,7,8,9,10,11,12,11,10,9,8,7]
+    pic_index = 0
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
@@ -88,5 +88,5 @@ if __name__ == "__main__":
     Form.show()
     timer = QtCore.QTimer()
     timer.timeout.connect(ui.show_next_pic)# neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
-    timer.start(500)
+    timer.start(300)
     sys.exit(app.exec_())
