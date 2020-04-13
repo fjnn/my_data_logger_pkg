@@ -41,7 +41,7 @@ class Ui_Form(object):
         self.figure = QtGui.QLabel(Form)
         self.figure.setGeometry(QtCore.QRect(30, 100, 51, 151))
         self.figure.setText(_fromUtf8(""))
-        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p0.png")))
+        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_0.png")))
         self.figure.setObjectName(_fromUtf8("figure"))
         self.textEdit = QtGui.QTextEdit(Form)
         self.textEdit.setGeometry(QtCore.QRect(100, 100, 301, 151))
@@ -63,13 +63,14 @@ class Ui_Form(object):
 
     def show_next_pic(self):
         global pic_num
-        if pic_num <= 12:
-            self.photo.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
-            print"fig/ball/pitch/p"+str(pic_num)+".png"
+        if pic_num <= 17:
+            # self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_"+str(pic_num)+".png")))
+            # print"fig/ball/pitch/p"+str(pic_num)+".png"
             pic_num += 1
         else:
             pic_num = 0
-            self.photo.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_"+str(pic_num)+".png")))
 
     def message(self):
         print "Sondre <3 Gizem"
@@ -83,5 +84,8 @@ if __name__ == "__main__":
     ui = Ui_Form()
     ui.setupUi(Form)
     Form.show()
+    timer = QtCore.QTimer()
+    timer.timeout.connect(ui.show_next_pic)# neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
+    timer.start(100)
     sys.exit(app.exec_())
 

@@ -7,7 +7,6 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from subprocess import call
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -17,18 +16,16 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
-
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
-        Form.resize(413, 300)
+        Form.resize(562, 384)
         self.pushButton = QtGui.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(40, 30, 151, 51))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
@@ -36,15 +33,20 @@ class Ui_Form(object):
         self.checkBox.setGeometry(QtCore.QRect(210, 30, 99, 22))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.label = QtGui.QLabel(Form)
-        self.label.setGeometry(QtCore.QRect(260, 70, 68, 17))
+        self.label.setGeometry(QtCore.QRect(380, 80, 91, 21))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
         self.label.setObjectName(_fromUtf8("label"))
         self.figure = QtGui.QLabel(Form)
-        self.figure.setGeometry(QtCore.QRect(30, 100, 51, 151))
+        self.figure.setGeometry(QtCore.QRect(20, 100, 271, 281))
         self.figure.setText(_fromUtf8(""))
-        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_0.png")))
+        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p0.png")))
         self.figure.setObjectName(_fromUtf8("figure"))
         self.textEdit = QtGui.QTextEdit(Form)
-        self.textEdit.setGeometry(QtCore.QRect(100, 100, 301, 151))
+        self.textEdit.setGeometry(QtCore.QRect(290, 110, 261, 261))
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
 
         self.retranslateUi(Form)
@@ -65,12 +67,12 @@ class Ui_Form(object):
         global pic_num
         if pic_num <= 17:
             # self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_"+str(pic_num)+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
             # print"fig/ball/pitch/p"+str(pic_num)+".png"
             pic_num += 1
         else:
             pic_num = 0
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/skeleton-resizedWALK_"+str(pic_num)+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p"+str(pic_num)+".png")))
 
     def message(self):
         print "Sondre <3 Gizem"
@@ -86,5 +88,5 @@ if __name__ == "__main__":
     Form.show()
     timer = QtCore.QTimer()
     timer.timeout.connect(ui.show_next_pic)# neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
-    timer.start(100)
+    timer.start(500)
     sys.exit(app.exec_())
