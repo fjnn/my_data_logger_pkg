@@ -69,6 +69,8 @@ class Ui_Form(object):
             motion = "pitch/p"
         elif motion_index == 1:  # yaw
             motion = "yaw/y"
+        elif motion_index == 2:
+            motion = "roll/r"
         else:
             print "Simulation is over"
             sys.exit(app.exec_())
