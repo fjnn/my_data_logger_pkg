@@ -62,51 +62,35 @@ class Ui_Form(object):
     def start_logging(self):
         print "Logging started"
         self.textEdit.setText("Logging started")
-        timer.start(300)
+        mainTimer.start()
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
+        """ Returns one pic every time tick.
+            Ps: For loops don't work"""
         global pic_index, motion_index
-        for motion_index in range(0, 4):
-            self.textEdit.append("motion:"+str(motion_index))
-            if motion_index == 0:  # pitch
-                motion = "pitch/p"
-                self.textEdit.append("Pitch")
-            elif motion_index == 1:  # yaw
-                motion = "yaw/y"
-                self.textEdit.append("Yaw")
-            elif motion_index == 2:  # roll
-                motion = "roll/r"
-                self.textEdit.append("Roll")
-            else:
-                print "Simulation is over"
-                timer.stop()
-                # sys.exit(app.exec_())
-            for pic_index in range(0, 23):
-                self.textEdit.append("pic:"+str(pic_index))
-                self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+        # self.textEdit.append(str(motion_index)+"-"+str(pic_index))
+        if motion_index == 0:  # pitch
+            motion = "pitch/p"
+        elif motion_index == 1:  # yaw
+            motion = "yaw/y"
+        elif motion_index == 2:
+            motion = "roll/r"
+        else:
+            print "Simulation is over"
+            mainTimer.stop()
+            #sys.exit(app.exec_())
 
-        # if motion_index == 0:  # pitch
-        #     motion = "pitch/p"
-        #     self.textEdit.append("Pitch")
-        # elif motion_index == 1:  # yaw
-        #     motion = "yaw/y"
-        #     self.textEdit.append("Yaw")
-        # elif motion_index == 2:
-        #     motion = "roll/r"
-        #     self.textEdit.append("Roll")
-        # else:
-        #     print "Simulation is over"
-        #     sys.exit(app.exec_())
-        #
-        # if pic_index <= 23:
-        #     self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
-        #     print "fig/ball/pitch/p"+str(pic_list[pic_index])+".png"
-        #     pic_index += 1
-        # else:
-        #     pic_index = 0
-        #     self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
-        #     motion_index += 1
+        if pic_index <= 23:
+            mainTimer.start(300)
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+            pic_index += 1
+        else:
+            pic_index = 0
+            mainTimer.start(2000)
+            self.textEdit.append("next")
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+            motion_index += 1
 
     def message(self):
         print "Sondre <3 Gizem"
@@ -123,6 +107,7 @@ if __name__ == "__main__":
     ui = Ui_Form()
     ui.setupUi(Form)
     Form.show()
-    timer = QtCore.QTimer()
-    timer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
+    mainTimer = QtCore.QTimer()
+    secondTimer = QtCore.QTimer()
+    mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
     sys.exit(app.exec_())
