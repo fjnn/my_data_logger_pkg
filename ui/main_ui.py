@@ -60,9 +60,11 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "Progress", None))
 
     def start_logging(self):
+        """This func is connected to the start button"""
         print "Logging started"
         self.textEdit.setText("Logging started")
-        mainTimer.start()
+        self.textEdit.append("VERTICAL motion in 2 sec")
+        mainTimer.start(2000)
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -72,14 +74,19 @@ class Ui_Form(object):
         # self.textEdit.append(str(motion_index)+"-"+str(pic_index))
         if motion_index == 0:  # pitch
             motion = "pitch/p"
+            motion_text = "HORIZONTAL motion in 2 sec"
         elif motion_index == 1:  # yaw
             motion = "yaw/y"
+            motion_text = "ROTATIONAL motion in 2 sec"
         elif motion_index == 2:
             motion = "roll/r"
+            motion_text = "Simulation is completed"
         else:
             print "Simulation is over"
+            motion_text = "error"
             mainTimer.stop()
             #sys.exit(app.exec_())
+        print motion_text
 
         if pic_index <= 23:
             mainTimer.start(300)
@@ -87,8 +94,8 @@ class Ui_Form(object):
             pic_index += 1
         else:
             pic_index = 0
+            self.textEdit.append(motion_text)
             mainTimer.start(2000)
-            self.textEdit.append("next")
             self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
             motion_index += 1
 
