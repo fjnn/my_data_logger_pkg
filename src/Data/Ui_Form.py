@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'main_ui.ui'
-#
-# Created by: PyQt4 UI code generator 4.11.4
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt4 import QtCore, QtGui
 
 try:
@@ -21,6 +13,9 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
+mainTimer = QtCore.QTimer()
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -101,29 +96,3 @@ class Ui_Form(object):
 
     def message(self):
         print "Sondre <3 Gizem"
-
-
-if __name__ == "__main__":
-    import sys
-    import roslaunch
-    package = 'rqt_gui'
-    executable = 'rqt_gui'
-    node = roslaunch.core.Node(package, executable)
-    launch = roslaunch.scriptapi.ROSLaunch()
-    launch.start()
-
-    process = launch.launch(node)
-    print process.is_alive()
-    pic_list = [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1,
-                0, 7, 8, 9, 10, 11, 12, 11, 10, 9, 8, 7]
-    pic_index = 0
-    motion_index = 0
-    app = QtGui.QApplication(sys.argv)
-    Form = QtGui.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    mainTimer = QtCore.QTimer()
-    secondTimer = QtCore.QTimer()
-    mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
-    sys.exit(app.exec_())
