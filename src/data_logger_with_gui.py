@@ -37,6 +37,8 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
+figures_path = "../ui/fig/ball/"
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -59,7 +61,7 @@ class Ui_Form(object):
         self.figure = QtGui.QLabel(Form)
         self.figure.setGeometry(QtCore.QRect(20, 100, 271, 281))
         self.figure.setText(_fromUtf8(""))
-        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/pitch/p0.png")))
+        self.figure.setPixmap(QtGui.QPixmap(_fromUtf8(figures_path+"pitch/p0.png")))
         self.figure.setObjectName(_fromUtf8("figure"))
         self.textEdit = QtGui.QTextEdit(Form)
         self.textEdit.setGeometry(QtCore.QRect(290, 110, 261, 261))
@@ -106,13 +108,13 @@ class Ui_Form(object):
 
         if pic_index <= 23:
             mainTimer.start(300)
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8(figures_path+motion+str(pic_list[pic_index])+".png")))
             pic_index += 1
         else:
             pic_index = 0
             self.textEdit.append(motion_text)
             mainTimer.start(2000)
-            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
+            self.figure.setPixmap(QtGui.QPixmap(_fromUtf8(figures_path+motion+str(pic_list[pic_index])+".png")))
             motion_index += 1
 
     def message(self):
