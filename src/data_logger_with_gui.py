@@ -79,11 +79,12 @@ class Ui_Form(object):
 
     def start_logging(self):
         """This func is connected to the start button"""
+        rosnode()
         print "Logging started"
         self.textEdit.setText("Logging started")
-
         self.textEdit.append("VERTICAL motion in 2 sec")
         mainTimer.start(2000)
+        secondTimer.start(100)
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -179,6 +180,25 @@ def callback_imu_wrist(msg):
     human_joint_info.position[2] = wrist_angles[1]
 
 
+def rosnode():
+    global joint_info, calibration_flag
+    initial_flag = True
+
+    if not initial_flag:
+        pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
+        sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, callback_imu_elbow)
+        sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, callback_imu_wrist)
+        data_logger.enable_logging()
+        rate = rospy.Rate(10)
+        log_start_time = rospy.get_time()
+    else:
+        human_joint_info.header.stamp = rospy.Time.now()
+        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")
+        calibration_flag = calibration_flag + 1
+        pub.publish(human_joint_info)
+        rate.sleep()
+
+
 if __name__ == '__main__':
     import sys
     pic_list = [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1,
@@ -192,18 +212,9 @@ if __name__ == '__main__':
     Form.show()
     mainTimer = QtCore.QTimer()
     mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
+    initial_flag = False
+    secondTimer = QtCore.QTimer()
+    secondTimer.timeout.connect(rosnode)
+    # secondTimer = QtCore.QTimer()
+    # secondTimer.timeout.connect(ui.rosnode)
     sys.exit(app.exec_())
-
-    global joint_info
-    pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-    sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, callback_imu_elbow)
-    sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, callback_imu_wrist)
-    data_logger.enable_logging()
-    rate = rospy.Rate(10)
-    log_start_time = rospy.get_time()
-    while not rospy.is_shutdown():
-        human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")
-        calibration_flag = calibration_flag + 1
-        pub.publish(human_joint_info)
-        rate.sleep()
