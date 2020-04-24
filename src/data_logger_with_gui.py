@@ -118,9 +118,6 @@ class Ui_Form(object):
             self.figure.setPixmap(QtGui.QPixmap(_fromUtf8(figures_path+motion+str(pic_list[pic_index])+".png")))
             motion_index += 1
 
-    def message(self):
-        print "Sondre <3 Gizem"
-
 
 rospy.init_node('data_logger_sub')
 
@@ -182,7 +179,7 @@ def callback_imu_wrist(msg):
 
 def rosnode():
     global joint_info, calibration_flag
-    initial_flag = True
+    global initial_flag
 
     if not initial_flag:
         pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
@@ -191,6 +188,7 @@ def rosnode():
         data_logger.enable_logging()
         rate = rospy.Rate(10)
         log_start_time = rospy.get_time()
+        initial_flag = True
     else:
         human_joint_info.header.stamp = rospy.Time.now()
         data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")

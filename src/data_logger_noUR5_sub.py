@@ -62,7 +62,7 @@ def callback_imu_wrist(msg):
         IMU_init["quat_pose_wrist"] = msg.orientation
         # print "calibrating"
 
-    R_init_wrist = q2m([IMU_init["quat_pose_wrist"].x, IMU_init["quat_pose_wrist"].y, IMU_init["quat_pose_wrist"].z, IMU_init["quat_pose_wrist"].w])
+    R_init_wrist = q2m([IMU_init["quat_pose_wrist"].x IMU_init["quat_pose_wrist"].y, IMU_init["quat_pose_wrist"].z, IMU_init["quat_pose_wrist"].w])
     R_current_wrist = q2m([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
     R_world2wrist = np.dot(np.transpose(R_init_wrist), R_current_wrist)
     R_elbow2wrist = np.dot(np.transpose(R_world2elbow), R_world2wrist)

@@ -99,9 +99,6 @@ class Ui_Form(object):
             self.figure.setPixmap(QtGui.QPixmap(_fromUtf8("fig/ball/"+motion+str(pic_list[pic_index])+".png")))
             motion_index += 1
 
-    def message(self):
-        print "Sondre <3 Gizem"
-
 
 if __name__ == "__main__":
     import sys
