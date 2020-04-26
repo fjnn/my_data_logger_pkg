@@ -15,7 +15,7 @@ import data
 
 # Private Globals
 _DATA = Queue()
-_DATA_LOGGER = None  # take it as an argument
+_DATA_LOGGER = None
 _logging_enabled = False
 
 
