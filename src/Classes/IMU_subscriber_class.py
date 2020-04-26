@@ -35,13 +35,15 @@ class IMUdataRecorder:
         self.calibration_flag = 0
         self.IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0], "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
-        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
+        self.sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, self.cb_imu_elbow)
+        self.sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, self.cb_imu_wrist)
         self.log_start_time = rospy.get_time()
+        self.data_logger_enabler()
 
         print "Initialized"
 
     def data_logger_enabler(self):
+        print "enable_logging"
         data_logger.enable_logging()
 
     def update(self):
@@ -55,6 +57,7 @@ class IMUdataRecorder:
             self.pub.publish(self.human_joint_info)
 
     def cb_imu_elbow(self, msg):
+        print "elbow data registered"
         self.elbow_measurement = msg
         while self.calibration_flag < 10:
             self.IMU_init["quat_pose_elbow"] = self.elbow_measurement
