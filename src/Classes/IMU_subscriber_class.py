@@ -35,32 +35,36 @@ class IMUdataRecorder:
         self.calibration_flag = 0
         self.IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0], "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.callback_imu_elbow)
-        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.callback_imu_wrist)
+        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
+        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
         self.log_start_time = rospy.get_time()
+
+        print "Initialized"
 
     def data_logger_enabler(self):
         data_logger.enable_logging()
 
     def update(self):
-        self.calculate_angles()
-        self.human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
-        self.calibration_flag = self.calibration_flag + 1
-        self.pub.publish(self.human_joint_info)
-        self.r.sleep()
+        if not self.calibration_flag >= 10:
+            print "calibrating"
+        else:
+            self.calculate_angles()
+            self.human_joint_info.header.stamp = rospy.Time.now()
+            data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
+            self.calibration_flag = self.calibration_flag + 1
+            self.pub.publish(self.human_joint_info)
 
     def cb_imu_elbow(self, msg):
         self.elbow_measurement = msg
+        while self.calibration_flag < 10:
+            self.IMU_init["quat_pose_elbow"] = self.elbow_measurement
 
     def cb_imu_wrist(self, msg):
         self.wrist_measurement = msg
-
-    def calculate_angles(self):
         while self.calibration_flag < 10:
-            self.IMU_init["quat_pose_elbow"] = self.elbow_measurement
             self.IMU_init["quat_pose_wrist"] = self.wrist_measurement
 
+    def calculate_angles(self):
         # Initial measurements for calibration
         self.R_init_elbow = q2m([self.IMU_init["quat_pose_elbow"].x, self.IMU_init["quat_pose_elbow"].y, self.IMU_init["quat_pose_elbow"].z, self.IMU_init["quat_pose_elbow"].w])
 
