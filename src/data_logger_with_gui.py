@@ -76,7 +76,6 @@ class Ui_Form(object):
         self.textEdit.setText("Logging started")
         self.textEdit.append("VERTICAL motion in 2 sec")
         mainTimer.start(2000)
-        secondTimer.start(30)
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -125,6 +124,4 @@ if __name__ == '__main__':
     mainTimer = QtCore.QTimer()
     mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
     ros_node = IMUdataRecorder()
-    secondTimer = QtCore.QTimer()
-    secondTimer.timeout.connect(ros_node.update())
     sys.exit(app.exec_())
