@@ -33,7 +33,9 @@ class IMUdataRecorder:
         self.human_joint_info.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         self.calibration_flag = 0
-        self.IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0], "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
+        # self.IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0], "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
+        self.quat_pose_elbow_init = Quaternion()
+        self.quat_pose_wrist_init = Quaternion()
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
         self.sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, self.cb_imu_elbow)
         self.sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, self.cb_imu_wrist)
@@ -47,50 +49,43 @@ class IMUdataRecorder:
         data_logger.enable_logging()
 
     def update(self):
-        if not self.calibration_flag >= 10:
-            print "calibrating"
-        else:
-            self.calculate_angles()
-            self.human_joint_info.header.stamp = rospy.Time.now()
-            data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
-            self.calibration_flag = self.calibration_flag + 1
-            self.pub.publish(self.human_joint_info)
+        print self.calibration_flag
+        self.human_joint_info.header.stamp = rospy.Time.now()
+        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
+        self.calibration_flag = self.calibration_flag + 1
+        self.pub.publish(self.human_joint_info)
 
     def cb_imu_elbow(self, msg):
-        print "elbow data registered"
         self.elbow_measurement = msg
         while self.calibration_flag < 10:
-            self.IMU_init["quat_pose_elbow"] = self.elbow_measurement
+            self.quat_pose_elbow_init = self.elbow_measurement.orientation
+        # Initial measurements for calibration
+        self.R_init_elbow = q2m([self.quat_pose_elbow_init.x, self.quat_pose_elbow_init.y, self.quat_pose_elbow_init.z, self.quat_pose_elbow_init.w])
+        # Current Measurements
+        self.R_current_elbow = q2m([self.elbow_measurement.orientation.x, self.elbow_measurement.orientation.y, self.elbow_measurement.orientation.z, self.elbow_measurement.orientation.w])
+        # Rotation matrices
+        self.R_world2elbow = np.dot(np.transpose(self.R_init_elbow), self.R_current_elbow)
+        # Convert to Euler angles
+        self.elbow_angles = m2e(self.R_world2elbow, axes="sxyz")
+        # Update joint angles
+        self.human_joint_info.position[3] = self.elbow_angles[0]
+        self.human_joint_info.position[4] = self.elbow_angles[2]
+        self.human_joint_info.position[5] = self.elbow_angles[1]
 
     def cb_imu_wrist(self, msg):
         self.wrist_measurement = msg
         while self.calibration_flag < 10:
-            self.IMU_init["quat_pose_wrist"] = self.wrist_measurement
-
-    def calculate_angles(self):
+            self.quat_pose_wrist_init = self.wrist_measurement.orientation
         # Initial measurements for calibration
-        self.R_init_elbow = q2m([self.IMU_init["quat_pose_elbow"].x, self.IMU_init["quat_pose_elbow"].y, self.IMU_init["quat_pose_elbow"].z, self.IMU_init["quat_pose_elbow"].w])
-
-        self.R_init_wrist = q2m([self.IMU_init["quat_pose_wrist"].x, self.IMU_init["quat_pose_wrist"].y, self.IMU_init["quat_pose_wrist"].z, self.IMU_init["quat_pose_wrist"].w])
-
+        self.R_init_wrist = q2m([self.quat_pose_wrist_init.x, self.quat_pose_wrist_init.y, self.quat_pose_wrist_init.z, self.quat_pose_wrist_init.w])
         # Current Measurements
-        self.R_current_elbow = q2m([self.elbow_measurement.orientation.x, self.elbow_measurement.orientation.y, self.elbow_measurement.orientation.z, self.elbow_measurement.orientation.w])
-
         self.R_current_wrist = q2m([self.wrist_measurement.orientation.x, self.wrist_measurement.orientation.y, self.wrist_measurement.orientation.z, self.wrist_measurement.orientation.w])
-
         # Rotation matrices
-        self.R_world2elbow = np.dot(np.transpose(self.R_init_elbow), self.R_current_elbow)
         self.R_world2wrist = np.dot(np.transpose(self.R_init_wrist), self.R_current_wrist)
         self.R_elbow2wrist = np.dot(np.transpose(self.R_world2elbow), self.R_world2wrist)
-
         # Convert to Euler angles
-        self.elbow_angles = m2e(self.R_world2elbow, axes="sxyz")
         self.wrist_angles = m2e(self.R_elbow2wrist, axes="sxyz")
-
         # update joint angles
         self.human_joint_info.position[0] = self.wrist_angles[0]
         self.human_joint_info.position[1] = self.wrist_angles[2]
         self.human_joint_info.position[2] = self.wrist_angles[1]
-        self.human_joint_info.position[3] = self.elbow_angles[0]
-        self.human_joint_info.position[4] = self.elbow_angles[2]
-        self.human_joint_info.position[5] = self.elbow_angles[1]

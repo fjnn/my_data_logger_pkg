@@ -12,4 +12,5 @@ if __name__ == "__main__":
     ros_node = IMUdataRecorder()
     while not rospy.is_shutdown():
         # gui.update()
+        ros_node.update()
         ros_node.r.sleep()  # these lines are trivial at the moment. You need to implement these methods
