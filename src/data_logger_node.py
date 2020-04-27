@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-"""This is the script that works as a ROS node."""
+"""This is the script that works as a ROS node.
+    No need any longer
+    Keep it as test"""
 
 import rospy
 from Classes.IMU_subscriber_class import IMUdataRecorder

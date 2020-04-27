@@ -97,7 +97,6 @@ class Ui_Form(object):
             print "Simulation is over"
             motion_text = "error"
             mainTimer.stop()
-            # sys.exit(app.exec_())
 
         if pic_index <= 23:
             mainTimer.start(300)
