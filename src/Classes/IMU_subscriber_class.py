@@ -5,6 +5,8 @@ This is a subscriber. Subscribes the IMU readings and save into data_logger_modu
 
 """
 
+# TODO: Elbow ve Wrist IMU ayni time frame'de aldigina emin ol.
+
 # imports
 import Data.data_logger_module as data_logger
 

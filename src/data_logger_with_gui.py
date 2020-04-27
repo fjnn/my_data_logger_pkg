@@ -79,12 +79,10 @@ class Ui_Form(object):
 
     def start_logging(self):
         """This func is connected to the start button"""
-        rosnode()
         print "Logging started"
         self.textEdit.setText("Logging started")
         self.textEdit.append("VERTICAL motion in 2 sec")
         mainTimer.start(2000)
-        secondTimer.start(100)
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -119,84 +117,6 @@ class Ui_Form(object):
             motion_index += 1
 
 
-rospy.init_node('data_logger_sub')
-
-# variable definitions
-q1 = Quaternion()
-q2 = Quaternion()
-euler_pose_elbow = [0.0, 0.0, 0.0]
-euler_pose_wrist = [0.0, 0.0, 0.0]
-quat_pose_elbow = Quaternion()
-quat_pose_wrist = Quaternion()
-
-R_world2elbow = np.identity(4)
-
-human_joint_info = JointState()
-human_joint_info.name = ['human_wrist_pitch', 'human_wrist_roll', 'human_wrist_yaw', 'human_elbow_pitch', 'human_elbow_roll', 'human_elbow_yaw']
-human_joint_info.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-calibration_flag = 0
-IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0],
-            "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
-
-
-# Function definitions
-def callback_imu_elbow(msg):
-    global human_joint_info, R_world2elbow
-    while calibration_flag < 10:
-        IMU_init["quat_pose_elbow"] = msg.orientation
-        # print "calibrating"
-
-    R_init_elbow = q2m([IMU_init["quat_pose_elbow"].x, IMU_init["quat_pose_elbow"].y, IMU_init["quat_pose_elbow"].z, IMU_init["quat_pose_elbow"].w])
-    R_current_elbow = q2m([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
-    R_world2elbow = np.dot(np.transpose(R_init_elbow), R_current_elbow)
-
-    elbow_angles = m2e(R_world2elbow, axes="sxyz")
-
-    human_joint_info.position[3] = elbow_angles[0]
-    human_joint_info.position[4] = elbow_angles[2]
-    human_joint_info.position[5] = elbow_angles[1]
-
-
-def callback_imu_wrist(msg):
-    global human_joint_info, R_world2elbow
-    while calibration_flag < 10:
-        IMU_init["quat_pose_wrist"] = msg.orientation
-        # print "calibrating"
-
-    R_init_wrist = q2m([IMU_init["quat_pose_wrist"].x, IMU_init["quat_pose_wrist"].y, IMU_init["quat_pose_wrist"].z, IMU_init["quat_pose_wrist"].w])
-    R_current_wrist = q2m([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
-    R_world2wrist = np.dot(np.transpose(R_init_wrist), R_current_wrist)
-    R_elbow2wrist = np.dot(np.transpose(R_world2elbow), R_world2wrist)
-
-    wrist_angles = m2e(R_elbow2wrist, axes="sxyz")
-    # print "%5.2f --- %5.2f -- %5.2f" % wrist_angles
-
-    human_joint_info.position[0] = wrist_angles[0]
-    human_joint_info.position[1] = wrist_angles[2]
-    human_joint_info.position[2] = wrist_angles[1]
-
-
-def rosnode():
-    global joint_info, calibration_flag
-    global initial_flag
-
-    if not initial_flag:
-        pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, callback_imu_elbow)
-        sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, callback_imu_wrist)
-        data_logger.enable_logging()
-        rate = rospy.Rate(10)
-        log_start_time = rospy.get_time()
-        initial_flag = True
-    else:
-        human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-log_start_time, pitch=human_joint_info.position[0], roll=human_joint_info.position[1], yaw=human_joint_info.position[2], mark="not-aided")
-        calibration_flag = calibration_flag + 1
-        pub.publish(human_joint_info)
-        rate.sleep()
-
-
 if __name__ == '__main__':
     import sys
     pic_list = [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1,
@@ -210,9 +130,7 @@ if __name__ == '__main__':
     Form.show()
     mainTimer = QtCore.QTimer()
     mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
-    initial_flag = False
     secondTimer = QtCore.QTimer()
-    secondTimer.timeout.connect(rosnode)
     # secondTimer = QtCore.QTimer()
     # secondTimer.timeout.connect(ui.rosnode)
     sys.exit(app.exec_())
