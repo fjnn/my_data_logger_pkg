@@ -10,15 +10,8 @@ Also it creates the gui using PyQt4.
 """
 
 # imports
-import Data.data_logger_module as data_logger
-
 import rospy
-import numpy as np
-from sensor_msgs.msg import JointState
-from sensor_msgs.msg import Imu
-from geometry_msgs.msg import Quaternion
-from tf.transformations import quaternion_matrix as q2m
-from tf.transformations import euler_from_matrix as m2e
+from Classes.IMU_subscriber_class import IMUdataRecorder
 
 from PyQt4 import QtCore, QtGui
 
@@ -83,6 +76,7 @@ class Ui_Form(object):
         self.textEdit.setText("Logging started")
         self.textEdit.append("VERTICAL motion in 2 sec")
         mainTimer.start(2000)
+        secondTimer.start(30)
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -130,7 +124,7 @@ if __name__ == '__main__':
     Form.show()
     mainTimer = QtCore.QTimer()
     mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
+    ros_node = IMUdataRecorder()
     secondTimer = QtCore.QTimer()
-    # secondTimer = QtCore.QTimer()
-    # secondTimer.timeout.connect(ui.rosnode)
+    secondTimer.timeout.connect(ros_node.update())
     sys.exit(app.exec_())
