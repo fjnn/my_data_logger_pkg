@@ -6,6 +6,20 @@ import matplotlib.pyplot as plt
 import data
 
 
+def plot_individual_motions(dataframes):
+    """ Take one person's all measurements and plot roll-pitch-yaw. All in one plot"""
+
+    x_axis = xrange(1, len(data.ID_ELAPSED_TIME)+1)
+    plt.plot(x_axis, data.ID_PITCH)
+    plt.plot(x_axis, data.ID_YAW)
+    plt.plot(x_axis, data.ID_ROLL)
+
+    plt.ylabel("Degrees")
+    plt.xlabel("Time")
+    plt.suptitle("Individual Motions")
+    plt.show()
+
+
 def plot_learning_curve(dataframes, show_points=True):
     # Calculate the average time for each dataframe
     means = []
@@ -37,8 +51,8 @@ def plot_many_learning_curves(users, show_points=True):
         max_trials = max(max_trials, len(user_dataframes))
     x_axis_ticks = range(1, max_trials+1)
     plt.xticks(x_axis_ticks)
-    
-    
+
+
 def plot_pedal_press_counts_per_trial(dataframes, show_points=True):
     # Calculate the average time for each dataframe
     pedal_counts = []
