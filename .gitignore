@@ -2,3 +2,5 @@
 Output/
 
 *.pyc
+
+src/\.ipynb_checkpoints/
