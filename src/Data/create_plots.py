@@ -11,26 +11,23 @@ import pandas as pd
 # Load Data
 # my_trials = loading.load_folder('../../Output')
 
-def load_file(filename):
-    """ Load the CSV file specified
-    @param filename: The name of the file or the relative path to the file you wish to load
-    @returns A pandas DataFrame containing the data loaded from the specified file
-    """
-    return pd.read_csv(filename)
-
 folder = '../../Output'
-dataframes = []
+df = []
 
 files = sorted(os.listdir(folder))
 for file in files:
     csv_filename = os.path.join(folder, file)
-    csv_file = load_file(csv_filename)
-    dataframes.append(csv_file)
+    csv_file = loading.pd.read_csv(csv_filename)
+    df.append(csv_file)
 
-print len(dataframes[1])
+print df[0]
 
 # %% Plot individual motions
-plotting.plot_individual_motions(dataframes[0])
+# fig, axes = plt.subplots(nrows = 1, ncols = 3)
+# plt.tight_layout()
+# axes[0].plot(df[0]['elapsed_time'], df[0]['y_deg'])
+# axes[1].plot(df[0]['elapsed_time'], df[0]['p_deg'])
+# axes[2].plot(df[0]['elapsed_time'], df[0]['r_deg'])
 
 # # %% Plot learning curve
 # plt.figure()  # create new plot window

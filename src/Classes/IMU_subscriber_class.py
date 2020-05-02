@@ -39,8 +39,8 @@ class IMUdataRecorder:
         self.quat_pose_elbow_init = Quaternion()
         self.quat_pose_wrist_init = Quaternion()
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        self.sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, self.cb_imu_elbow)
-        self.sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, self.cb_imu_wrist)
+        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
+        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
         self.log_start_time = rospy.get_time()
         self.data_logger_enabler()
 
@@ -61,6 +61,7 @@ class IMUdataRecorder:
         self.elbow_measurement = msg
         while self.calibration_flag < 10:
             self.quat_pose_elbow_init = self.elbow_measurement.orientation
+            print "calibrating"
         # Initial measurements for calibration
         self.R_init_elbow = q2m([self.quat_pose_elbow_init.x, self.quat_pose_elbow_init.y, self.quat_pose_elbow_init.z, self.quat_pose_elbow_init.w])
         # Current Measurements
