@@ -64,6 +64,8 @@ class Ui_Form(object):
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.start_logging)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+        self.start_flag = False
+
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
         self.pushButton.setText(_translate("Form", "Start", None))
@@ -71,12 +73,24 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "Progress", None))
 
     def start_logging(self):
-        """This func is connected to the start button"""
-        print "Logging started"
-        self.textEdit.setText("Logging started")
-        self.textEdit.append("VERTICAL motion in 2 sec")
-        mainTimer.start(2000)
-        rosTimer.start(30)
+        """This func is connected to the start/stop button"""
+
+        if not self.start_flag:
+            print "Logging started"
+            self.textEdit.setText("Logging started")
+            self.textEdit.append("VERTICAL motion in 2 sec")
+            mainTimer.start(2000)
+            rosTimer.start(30)
+            self.pushButton.setText(_translate("Form", "Stop", None))
+            self.start_flag = True
+
+        else:
+            mainTimer.stop()
+            rosTimer.stop()
+            print "Logging stopped"
+            self.textEdit.append("Logging stopped")
+            self.pushButton.setText(_translate("Form", "Start", None))
+            self.start_flag = False
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
