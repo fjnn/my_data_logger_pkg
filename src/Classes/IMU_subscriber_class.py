@@ -21,8 +21,6 @@ from tf.transformations import euler_from_matrix as m2e
 
 _CALIBRATION_TH = 60
 
-_test_angle = Vector3()
-
 
 class IMUdataRecorder:
     def __init__(self, rate=30):
@@ -35,6 +33,7 @@ class IMUdataRecorder:
         self.quat_pose_elbow = Quaternion()
         self.quat_pose_wrist = Quaternion()
         self.R_world2elbow = np.identity(4)
+        self.wrist_angles_rpy = Vector3()
         self.human_joint_info = JointState()
         self.human_joint_info.name = ['human_wrist_pitch', 'human_wrist_roll', 'human_wrist_yaw', 'human_elbow_pitch', 'human_elbow_roll', 'human_elbow_yaw']
         self.human_joint_info.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -48,6 +47,7 @@ class IMUdataRecorder:
 
     def init_subscribers_and_publishers(self):
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
+        self.pub_wrist_angles = rospy.Publisher('/wrist_angles_rpy', Vector3, queue_size=1)
         self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
         self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
         self.log_start_time = rospy.get_time()
@@ -61,9 +61,13 @@ class IMUdataRecorder:
     def update(self):
         print self.calibration_flag
         self.human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
+        # data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
         self.calibration_flag = self.calibration_flag + 1
         self.pub.publish(self.human_joint_info)
+        self.wrist_angles_rpy.x = np.degrees(self.human_joint_info.position[0])  # pitch
+        self.wrist_angles_rpy.y = np.degrees(self.human_joint_info.position[1])  # yaw
+        self.wrist_angles_rpy.z = np.degrees(self.human_joint_info.position[2])  # roll
+        self.pub_wrist_angles.publish(self.wrist_angles_rpy)
 
     def cb_imu_elbow(self, msg):
         self.elbow_measurement = msg
