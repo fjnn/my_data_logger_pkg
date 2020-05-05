@@ -31,6 +31,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 figures_path = "../ui/fig/ball/"
+ros_node = IMUdataRecorder()
 
 
 class Ui_Form(object):
@@ -83,6 +84,7 @@ class Ui_Form(object):
             rosTimer.start(30)
             self.pushButton.setText(_translate("Form", "Stop", None))
             self.start_flag = True
+            ros_node.init_subscribers_and_publishers()
 
         else:
             mainTimer.stop()
@@ -91,6 +93,7 @@ class Ui_Form(object):
             self.textEdit.append("Logging stopped")
             self.pushButton.setText(_translate("Form", "Start", None))
             self.start_flag = False
+            ros_node.runflag = False
         # call(["rqt_plot"])  # here I will call my subscriber
 
     def show_next_pic(self):
@@ -137,7 +140,6 @@ if __name__ == '__main__':
     Form.show()
     mainTimer = QtCore.QTimer()
     mainTimer.timeout.connect(ui.show_next_pic)  # neden show_next_pic() deyince hatali? Cunku func cagirmiyoruz, onunla bagliyoruz.
-    ros_node = IMUdataRecorder()
     rosTimer = QtCore.QTimer()
     rosTimer.timeout.connect(ros_node.update)
     sys.exit(app.exec_())

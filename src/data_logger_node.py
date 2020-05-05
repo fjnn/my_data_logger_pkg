@@ -10,9 +10,6 @@ from Classes.IMU_subscriber_class import IMUdataRecorder
 
 
 if __name__ == "__main__":
-    # gui = UI_form()
     ros_node = IMUdataRecorder()
-    while not rospy.is_shutdown():
-        # gui.update()
+    while not ros_node.runflag:
         ros_node.update()
-        ros_node.r.sleep()  # these lines are trivial at the moment. You need to implement these methods

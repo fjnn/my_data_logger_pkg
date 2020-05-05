@@ -18,6 +18,8 @@ from geometry_msgs.msg import Quaternion
 from tf.transformations import quaternion_matrix as q2m
 from tf.transformations import euler_from_matrix as m2e
 
+_CALIBRATION_TH = 60
+
 
 class IMUdataRecorder:
     def __init__(self, rate=30):
@@ -33,18 +35,21 @@ class IMUdataRecorder:
         self.human_joint_info = JointState()
         self.human_joint_info.name = ['human_wrist_pitch', 'human_wrist_roll', 'human_wrist_yaw', 'human_elbow_pitch', 'human_elbow_roll', 'human_elbow_yaw']
         self.human_joint_info.position = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
         self.calibration_flag = 0
         # self.IMU_init = {"quat_pose_elbow": [0.0, 0.0, 0.0, 0.0], "quat_pose_wrist": [0.0, 0.0, 0.0, 0.0]}
         self.quat_pose_elbow_init = Quaternion()
         self.quat_pose_wrist_init = Quaternion()
-        self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
-        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
-        self.log_start_time = rospy.get_time()
-        self.data_logger_enabler()
+        self.runflag = False
 
         print "Initialized"
+
+    def init_subscribers_and_publishers(self):
+        self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
+        self.sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, self.cb_imu_elbow)
+        self.sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, self.cb_imu_wrist)
+        self.log_start_time = rospy.get_time()
+        self.data_logger_enabler()
+        self.runflag = True
 
     def data_logger_enabler(self):
         print "enable_logging"
@@ -59,7 +64,7 @@ class IMUdataRecorder:
 
     def cb_imu_elbow(self, msg):
         self.elbow_measurement = msg
-        while self.calibration_flag < 10:
+        while self.calibration_flag < _CALIBRATION_TH:
             self.quat_pose_elbow_init = self.elbow_measurement.orientation
             print "calibrating"
         # Initial measurements for calibration
@@ -77,7 +82,7 @@ class IMUdataRecorder:
 
     def cb_imu_wrist(self, msg):
         self.wrist_measurement = msg
-        while self.calibration_flag < 10:
+        while self.calibration_flag < _CALIBRATION_TH:
             self.quat_pose_wrist_init = self.wrist_measurement.orientation
         # Initial measurements for calibration
         self.R_init_wrist = q2m([self.quat_pose_wrist_init.x, self.quat_pose_wrist_init.y, self.quat_pose_wrist_init.z, self.quat_pose_wrist_init.w])
