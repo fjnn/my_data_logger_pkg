@@ -14,11 +14,14 @@ import rospy
 import numpy as np
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Vector3
 from geometry_msgs.msg import Quaternion
 from tf.transformations import quaternion_matrix as q2m
 from tf.transformations import euler_from_matrix as m2e
 
 _CALIBRATION_TH = 60
+
+_test_angle = Vector3()
 
 
 class IMUdataRecorder:
@@ -45,8 +48,8 @@ class IMUdataRecorder:
 
     def init_subscribers_and_publishers(self):
         self.pub = rospy.Publisher('/joint_states', JointState, queue_size=1)
-        self.sub_imu_e = rospy.Subscriber('/sensor_elbow', Imu, self.cb_imu_elbow)
-        self.sub_imu_w = rospy.Subscriber('/sensor_wrist', Imu, self.cb_imu_wrist)
+        self.sub_imu_e = rospy.Subscriber('/sensor_l_elbow', Imu, self.cb_imu_elbow)
+        self.sub_imu_w = rospy.Subscriber('/sensor_l_wrist', Imu, self.cb_imu_wrist)
         self.log_start_time = rospy.get_time()
         self.data_logger_enabler()
         self.runflag = True
