@@ -61,7 +61,7 @@ class IMUdataRecorder:
     def update(self):
         print self.calibration_flag
         self.human_joint_info.header.stamp = rospy.Time.now()
-        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[1], yaw=self.human_joint_info.position[2], mark="not-aided")
+        data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[2], yaw=self.human_joint_info.position[1], mark="not-aided")
         self.calibration_flag = self.calibration_flag + 1
         self.pub.publish(self.human_joint_info)
         self.wrist_angles_rpy.x = np.degrees(self.human_joint_info.position[0])  # pitch
