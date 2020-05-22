@@ -32,10 +32,10 @@ def pseudo_imu_msg_creator():
         # imu_data.header = Header()
         imu_data.header.stamp = rospy.Time.now()
         imu_data.header.frame_id = "imu_data"
-        # imu_data.orientation.x = 0.0
-        # imu_data.orientation.y = 0.0
-        # imu_data.orientation.z = 0.0
-        # imu_data.orientation.w = 1.0
+        imu_data.orientation.x = 0.0
+        imu_data.orientation.y = 0.0
+        imu_data.orientation.z = 0.0
+        imu_data.orientation.w = 1.0
         imu_data.orientation_covariance[0] = -1.0
         imu_data.angular_velocity.x = index
         imu_data.angular_velocity.y = 0.0
