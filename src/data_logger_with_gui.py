@@ -11,7 +11,7 @@ Also it creates the gui using PyQt4.
 
 # imports
 import rospy
-from Classes.IMU_subscriber_class import IMUdataRecorder
+from Classes.IMU_subscriber_class_v2 import IMUsubscriber
 
 from PyQt4 import QtCore, QtGui
 
@@ -31,7 +31,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 figures_path = "../ui/fig/ball/"
-ros_node = IMUdataRecorder()
+ros_node = IMUsubscriber()
 
 
 class Ui_Form(object):
