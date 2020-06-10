@@ -14,3 +14,11 @@ if __name__ == "__main__":
     ros_node = IMUdataRecorder()
     while not ros_node.runflag:
         ros_node.update()
+
+# TO RUN MANUAL
+# if __name__ == "__main__":
+#     ros_node = IMUdataRecorder()
+#     ros_node.init_subscribers_and_publishers()
+#     # while not ros_node.runflag:
+#     while not rospy.is_shutdown():
+#         ros_node.update()
