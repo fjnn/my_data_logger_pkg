@@ -59,7 +59,6 @@ class IMUdataRecorder:
         data_logger.enable_logging()
 
     def update(self):
-        print self.calibration_flag
         self.human_joint_info.header.stamp = rospy.Time.now()
         data_logger.log_metrics(tg=rospy.get_time(), te=rospy.get_time()-self.log_start_time, pitch=self.human_joint_info.position[0], roll=self.human_joint_info.position[2], yaw=self.human_joint_info.position[1], mark="not-aided")
         self.calibration_flag = self.calibration_flag + 1
@@ -73,8 +72,9 @@ class IMUdataRecorder:
         self.elbow_measurement = msg
         while self.calibration_flag < _CALIBRATION_TH:
             self.quat_pose_elbow_init = self.elbow_measurement.orientation
-            print "calibrating"
+            print "calibrating", self.calibration_flag
         # Initial measurements for calibration
+        print self.calibration_flag
         self.R_init_elbow = q2m([self.quat_pose_elbow_init.x, self.quat_pose_elbow_init.y, self.quat_pose_elbow_init.z, self.quat_pose_elbow_init.w])
         # Current Measurements
         self.R_current_elbow = q2m([self.elbow_measurement.orientation.x, self.elbow_measurement.orientation.y, self.elbow_measurement.orientation.z, self.elbow_measurement.orientation.w])
